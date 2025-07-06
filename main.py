@@ -29,7 +29,9 @@ OPTS = {
     'noplaylist': True,
     'quiet': True,
     'no_warnings': True,
-    'progress_hooks': [progress_hook]
+    'progress_hooks': [progress_hook],
+    'no_set_creation_date': True,
+    'use_mtime': True
 }
 
 
@@ -80,16 +82,13 @@ def main():
     root.title("YT-DLPackaged by Noise")
 
     label = tk.Label(root, text="Вставь ссылку на видео в поле ниже:")
-    label.pack(pady=(10, 0))
+    label.grid(row=0, column=0)
 
     entry = tk.Entry(root, width=50)
-    entry.pack(pady=5)
+    entry.grid(row=0, column=1)
 
     output_box = ScrolledText(root, height=20, width=80, state=tk.NORMAL)
-    output_box.pack(padx=10, pady=5)
-
-    sys.stdout = StdoutRedirector(output_box)
-    sys.stderr = sys.stdout
+    output_box.grid(row=2, columnspan=2)
 
     def on_run():
         if not mutex.locked():
@@ -99,8 +98,10 @@ def main():
             thread.start()
 
     run_button = tk.Button(root, text="Скачать", command=on_run)
-    run_button.pack(pady=5)
+    run_button.grid(row=1, columnspan=2)
 
+    sys.stdout = StdoutRedirector(output_box)
+    sys.stderr = sys.stdout
     root.mainloop()
 
 
