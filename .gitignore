@@ -3,3 +3,4 @@ main.spec
 dist/*
 **/ffmpeg.exe
 **/ffprobe.exe
+.venv

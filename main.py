@@ -1,27 +1,27 @@
+from typing import Callable, Any
 import winreg
-import yt_dlp
+import yt_dlp # type: ignore
 import os
 import sys
 import tkinter as tk
 from tkinter.scrolledtext import ScrolledText
 import threading
+from pathlib import Path
 
 # MUST INSTALL FFMPEG THROUGH CHOCOLATEY BEFORE RUNNING compile.bat
-
 
 mutex = threading.Lock()
 
 
-def progress_hook(d):
+def progress_hook(d: Any) -> None:
     if d['status'] == 'downloading':
         sys.stdout.write("\n")
         sys.stdout.flush()
-
     elif d['status'] == 'finished':
         print("\nDownload finished. Now post-processing...")
 
 
-OPTS = {
+OPTS: dict[str, str | bool | list[Callable[..., None]]] = {
     'ffmpeg_location': os.path.join(getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__))), '.'),
     'format': 'bestvideo+bestaudio/best',
     'merge_output_format': 'mp4',
@@ -38,10 +38,13 @@ OPTS = {
 
 def cd_to_downloads() -> None:
     try:
-        sub_key = r'SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders'
-        downloads_guid = '{374DE290-123F-4565-9164-39C4925E467B}'
-        with winreg.OpenKey(winreg.HKEY_CURRENT_USER, sub_key) as key:
-            location = winreg.QueryValueEx(key, downloads_guid)[0]
+        if os.name == "nt":
+            sub_key = r'SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders'
+            downloads_guid = '{374DE290-123F-4565-9164-39C4925E467B}'
+            with winreg.OpenKey(winreg.HKEY_CURRENT_USER, sub_key) as key:
+                location = winreg.QueryValueEx(key, downloads_guid)[0]
+        else:
+            location = str(Path.home() / "Downloads")
         os.chdir(location)
     except:
         pass
@@ -53,7 +56,7 @@ def download(url: str) -> None:
         try:
             cd_to_downloads()
             with yt_dlp.YoutubeDL(OPTS) as ydl:
-                ydl.download([url])
+                ydl.download([url]) # type: ignore
             print("\nDone!")
         except:
             pass
@@ -68,7 +71,7 @@ def main_cli():
 class StdoutRedirector:
     def __init__(self, text_widget: ScrolledText):
         self._text_widget = text_widget
-    
+
     def write(self, s: str):
         self._text_widget.insert(tk.END, s)
         self._text_widget.see(tk.END)
