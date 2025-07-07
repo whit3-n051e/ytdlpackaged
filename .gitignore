@@ -1,6 +1,7 @@
 build/*
-main.spec
+**/*.spec
 dist/*
-**/ffmpeg.exe
-**/ffprobe.exe
+**/*.exe
 .venv
+**/__pycache__
+**/*.txt

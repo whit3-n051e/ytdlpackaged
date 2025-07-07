@@ -1,4 +1,4 @@
-from .src import Downloader, StdRedir
+from src import Downloader, StdRedir
 import tkinter as tk
 from tkinter.scrolledtext import ScrolledText
 import threading
@@ -8,8 +8,8 @@ def main():
     root = tk.Tk()
     root.title("YT-DLPackaged by Noise")
 
-    label = tk.Label(root, text="Вставь ссылку на видео в поле ниже:")
-    label.grid(row=0, column=0)
+    label = tk.Label(root, text="Вставь ссылку на видео в поле справа:")
+    label.grid(row=0, column=0, pady=5)
 
     entry = tk.Entry(root, width=50)
     entry.grid(row=0, column=1)
@@ -21,11 +21,14 @@ def main():
         if not Downloader.mutex_is_locked():
             output_box.delete('1.0', tk.END)  # clear previous output
             user_input = entry.get()
-            thread = threading.Thread(target=Downloader.download, args=(user_input,))
+            thread = threading.Thread(target=Downloader.download, args=(user_input.strip(),))
             thread.start()
 
     run_button = tk.Button(root, text="Скачать", command=on_run)
-    run_button.grid(row=1, columnspan=2)
+    run_button.grid(row=1, columnspan=2, pady=10)
 
     StdRedir.redirect_to(output_box)
     root.mainloop()
+
+if __name__ == "__main__":
+    main()

@@ -39,10 +39,9 @@ class Downloader(object):
         'merge_output_format': 'mp4',
         'outtmpl': '%(title)s.%(ext)s',
         'noplaylist': True,
-        'quiet': True,
-        'no_warnings': True,
+        'quiet': False,
+        'no_warnings': False,
         'progress_hooks': [__progress_hook],
-        'no_set_creation_date': True,
         'use_mtime': True
     }
 
@@ -51,14 +50,14 @@ class Downloader(object):
     @classmethod
     def download(cls: type[Self], url: str) -> None:
         with cls.__mutex:
-            print("Starting...")
+            print("Начинаю загрузку...")
             try:
                 Downloader.__cd_to_downloads()
                 with yt_dlp.YoutubeDL(cls.__OPTS) as ydl:
                     ydl.download([url]) # type: ignore
-                print("\nDone!")
+                print("\nГотово!\nОшибок, вроде, нет.")
             except:
-                pass
+                print("\nНе догрузилось.")
 
     @classmethod
     def mutex_is_locked(cls: type[Self]) -> bool:
