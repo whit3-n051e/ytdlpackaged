@@ -67,7 +67,11 @@ class Downloader(object):
                 settings = cls.__BASE_OPTS.copy()
                 settings.update(cls.__AUDIO_OPTS if audio_only else cls.__VIDEO_OPTS)
                 if audio_only:
-                    settings['audio_format'] = format
+                    settings['postprocessors'] = [{
+                        'key': 'FFmpegExtractAudio',
+                        'preferredcodec': format,
+                        'preferredquality': '0',
+                    }]
                 else:
                     settings['merge_output_format'] = format
                 Downloader.__cd_to_downloads()
