@@ -60,11 +60,13 @@ class Downloader(object):
     __mutex = threading.Lock()
 
     @classmethod
-    def download(cls: type[Self], url: str, format: str, audio_only: bool = False) -> None:
+    def download(cls: type[Self], url: str, format: str, audio_only: bool = False, use_system_ffmpeg: bool = False) -> None:
         with cls.__mutex:
             print("Начинаю загрузку...")
             try:
                 settings = cls.__BASE_OPTS.copy()
+                if '--use-system-ffmpeg' in sys.argv:
+                    del settings['ffmpeg_location']
                 settings.update(cls.__AUDIO_OPTS if audio_only else cls.__VIDEO_OPTS)
                 if audio_only:
                     settings['postprocessors'] = [{
