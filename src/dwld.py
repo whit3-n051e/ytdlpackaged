@@ -1,4 +1,4 @@
-from typing import Any, Self
+from typing import Any, Self, Callable
 import yt_dlp # type: ignore
 import os
 import sys
@@ -58,14 +58,20 @@ class Downloader(object):
     }
 
     __mutex = threading.Lock()
+    __callback: Callable[[bool], None] = lambda a: None
+
+    @classmethod
+    def set_callback(cls: type[Self], callback: Callable[[bool], None]) -> None:
+        cls.__callback = callback
 
     @classmethod
     def download(cls: type[Self], url: str, format: str, audio_only: bool = False, use_system_ffmpeg: bool = False) -> None:
+        result = False
         with cls.__mutex:
             print("Начинаю загрузку...")
             try:
                 settings = cls.__BASE_OPTS.copy()
-                if '--use-system-ffmpeg' in sys.argv:
+                if use_system_ffmpeg:
                     del settings['ffmpeg_location']
                 settings.update(cls.__AUDIO_OPTS if audio_only else cls.__VIDEO_OPTS)
                 if audio_only:
@@ -79,9 +85,11 @@ class Downloader(object):
                 Downloader.__cd_to_downloads()
                 with yt_dlp.YoutubeDL(settings) as ydl:
                     ydl.download([url]) # type: ignore
-                print("\nГотово!\nОшибок, вроде, нет.")
+                print("\nDone.")
+                result = True
             except:
-                print("\nНе догрузилось.")
+                print("\nCould not finish.")
+        cls.__callback(result)
 
     @classmethod
     def mutex_is_locked(cls: type[Self]) -> bool:
