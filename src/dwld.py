@@ -68,7 +68,7 @@ class Downloader(object):
     def download(cls: type[Self], url: str, format: str, audio_only: bool = False, use_system_ffmpeg: bool = False) -> None:
         result = False
         with cls.__mutex:
-            print("Начинаю загрузку...")
+            print("Starting...")
             try:
                 settings = cls.__BASE_OPTS.copy()
                 if use_system_ffmpeg:
