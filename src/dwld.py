@@ -21,15 +21,6 @@ class Downloader(object):
     @staticmethod
     def __cd_to_downloads() -> None:
         location: str | None = None
-        if os.name == "nt":
-            try:
-                import winreg
-                sub_key = r'SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders'
-                downloads_guid = '{374DE290-123F-4565-9164-39C4925E467B}'
-                with winreg.OpenKey(winreg.HKEY_CURRENT_USER, sub_key) as key:
-                    location = winreg.QueryValueEx(key, downloads_guid)[0]
-            except:
-                pass
         try:
             if location is None:
                 location = str(Path.home() / "Downloads")
