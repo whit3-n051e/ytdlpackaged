@@ -10,6 +10,7 @@ from enum import StrEnum
 from .language_data import GUI_LINES_ENGLISH, GUI_LINES_RUSSIAN
 
 
+VERSION = "v0.1.2"
 VIDEO_FORMATS = ['mp4', 'avi', 'flv', 'mkv', 'mov', 'webm']
 AUDIO_FORMATS = ['mp3', 'aac', 'alac', 'flac', 'm4a', 'opus', 'vorbis', 'wav']
 
@@ -107,7 +108,7 @@ class Gui(object):
     @classmethod
     def __init_everything(cls: type[Self]) -> None:
         cls.__root = tk.Tk()
-        cls.__root.title("YT-DLPackaged by Noise")
+        cls.__root.title(f"YT-DLPackaged by Noise {VERSION}")
 
         # Variables
         cls.__audio_only = tk.BooleanVar(cls.__root, value=False)
